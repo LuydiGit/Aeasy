@@ -1,7 +1,7 @@
 # Aeasy
 
-Discentes: Luydi Bentes
-           João Pedro
+Discentes: Luydi Bentes, João Pedro
+       
 Easy scheduling app for barbershops
 
 App de agendamento para barbearias.
