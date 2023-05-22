@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text } from 'react-native';
+//import AsyncStorage from '@react-native-community/async-storage';
+
+import { UserContext } from '../../contexts/UserContext';
 
 import BarberLogo from '../../assets/barber.svg';
 
@@ -14,11 +17,14 @@ import {
     SignMessageButtonTextBold
 } from './styles';
 
+import Api from '../../Api';
+
 import SignInput from '../../components/SignInput';
 import EmailIcon from '../../assets/email.svg';
 import LockIcon from '../../assets/lock.svg';
 
 export default () => {
+    const { dispatch: userDispatch } = useContext(UserContext);
 
     const navigation = useNavigation();
 

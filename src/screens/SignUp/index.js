@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text } from 'react-native';
+//import AsyncStorage from '@react-native-community/async-storage';
+
+import { UserContext } from '../../contexts/UserContext';
 
 import {
     Container,
@@ -12,14 +15,17 @@ import {
     SignMessageButtonTextBold
 } from './styles';
 
+import SignInput from '../../components/SignInput';
+
+import Api from '../../Api';
+
 import BarberLogo from '../../assets/barber.svg';
 import PersonIcon from '../../assets/person.svg';
-import SignInput from '../../components/SignInput';
 import EmailIcon from '../../assets/email.svg';
 import LockIcon from '../../assets/lock.svg';
 
 export default () => {
-
+    const { dispatch: userDispatch } = useContext(UserContext);
     const navigation = useNavigation();
 
     const [nameField, setNameField] = useState('');
@@ -27,29 +33,28 @@ export default () => {
     const [passwordField, setPasswordField] = useState('');
 
     const handleSignClick = async () => {
-        if(emailField != '' && passwordField != '') {
-
-            let json = await Api.signIn(emailField, passwordField);
-
-            if(json.token) {
-                await AsyncStorage.setItem('token', json.token);
+        if(nameField != '' && emailField != '' && passwordField != '') {
+            let res = await Api.signUp(nameField, emailField, passwordField);
+            
+            if(res.token) {
+                await AsyncStorage.setItem('token', res.token);
 
                 userDispatch({
                     type: 'setAvatar',
                     payload:{
-                        avatar: json.data.avatar
+                        avatar: res.data.avatar
                     }
                 });
 
                 navigation.reset({
                     routes:[{name:'MainTab'}]
                 });
-            } else {
-                alert('E-mail e/ou senha errados!');
-            }
 
+            } else {
+                alert("Erro: "+res.error);
+            }
         } else {
-            alert("Preencha os campos!");
+            alert("Preencha os campos");
         }
     }
 
