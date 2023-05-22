@@ -1,7 +1,10 @@
 # Aeasy
+
+Discentes: Luydi Bentes
+           João Pedro
 Easy scheduling app for barbershops
 
- App de agendamento para barbearias.
+App de agendamento para barbearias.
 
 Um dos passos inciais após os documentos de visão desse projeto foi a prototipação, feita no figma:
 link: https://www.figma.com/file/uReOcEK8mh68Pm8RtVNH35/barber-easy?t=Aik7tcQ1uOMh2KIb-1
