@@ -55,3 +55,7 @@ Importações feitas
 14- npm install react-native-svg
 
 15- npm add --dev react-native-svg-transformer -D
+
+16 - npm install firebase
+
+17 - npm install --save react-firebase-hooks
