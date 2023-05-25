@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { UserContext } from '../../contexts/UserContext';
 
 import BarberLogo from '../../assets/barber.svg';
+
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { auth } from "../../../firebaseConfig.js"
 
 import {
     Container,
@@ -17,52 +17,44 @@ import {
     SignMessageButtonTextBold
 } from './styles';
 
-import Api from '../../Api';
-
 import SignInput from '../../components/SignInput';
 import EmailIcon from '../../assets/email.svg';
 import LockIcon from '../../assets/lock.svg';
 
 export default () => {
-    const { dispatch: userDispatch } = useContext(UserContext);
 
-    const navigation = useNavigation();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const [emailField, setEmailField] = useState('');
-    const [passwordField, setPasswordField] = useState('');
+    const [
+        signInWithEmailAndPassword,
+        user,
+        loading,
+        error,
+      ] = useSignInWithEmailAndPassword(auth);
 
-    const handleSignClick = async () => {
-        if(emailField != '' && passwordField != '') {
-
-            let json = await Api.signIn(emailField, passwordField);
-
-            if(json.token) {
-                await AsyncStorage.setItem('token', json.token);
-
-                userDispatch({
-                    type: 'setAvatar',
-                    payload:{
-                        avatar: json.data.avatar
-                    }
-                });
-
-                navigation.reset({
-                    routes:[{name:'MainTab'}]
-                });
-            } else {
-                alert('E-mail e/ou senha errados!');
-            }
-
-        } else {
-            alert("Preencha os campos!");
-        }
+      function handleSignIn(t){
+        t.preventDefault();
+        signInWithEmailAndPassword(email, password); 
     }
 
+    if (loading) {
+        return <Text>carregando...</Text>;
+    }
+
+      
+    const navigation = useNavigation();
     const handleMessageButtonClick = () => {
         navigation.reset({
             routes: [{name: 'SignUp'}]
         });
     }
+
+    /*const handleSignClick = () => {
+        navigation.reset({
+            routes: [{name: 'MainTab'}]
+        });
+    }*/
 
     return (
         <Container>
@@ -76,20 +68,21 @@ export default () => {
             <SignInput
                     IconSvg={EmailIcon}
                     placeholder="Endereço de e-mail"
-                    value={emailField}
-                   onChangeText={t=>setEmailField(t)}
-                
+                    onChangeText={t=>setEmail(t)}
+                    //value={email}
+                    //onChange={(e) => setEmail(e.target,value)}
                 />
 
             <SignInput
                     IconSvg={LockIcon}
                     placeholder="Digite sua senha"
-                    value={passwordField}
-                    onChangeText={t=>setPasswordField(t)}
-                    password={true}s                
+                    password={true}
+                    onChangeText={t=>setPassword(t)}      
+                   // value={password}
+                   //onChange={(e) => setPassword(e.target,value)}        
                 />
 
-                <CustomButton onPress={handleSignClick}>
+                <CustomButton onPress={handleSignIn}>
                     <CustomButtonText>ENTRAR</CustomButtonText>
                 </CustomButton>
             </InputArea>
